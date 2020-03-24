@@ -1,0 +1,8 @@
+﻿@model IEnumerable<ITLAManage.Models.Asignaturas>
+
+<select class="form-control" id="IDAsignatura" name="IDAsignatura">
+@foreach (var i in Model)
+{
+    <option value="@i.IDAsignatura">@i.Nombre</option>
+}
+</select>

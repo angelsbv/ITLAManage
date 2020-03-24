@@ -1,0 +1,51 @@
+﻿@model IEnumerable<ITLAManage.Models.Asignaturas>
+
+@{
+    ViewBag.Title = "Asignaturas";
+}
+
+@{
+    if (Model.Count() == 0)
+    {
+        <center><h3><strong>Actualmente no existen asignaturas, intente @Html.ActionLink("agregar una.", "AgregarAsignatura")</strong></h3></center>
+    }
+    else 
+    {
+        <h2>Listado de Asignaturas</h2>
+        <table class="table table-hover">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Nombre)
+                </th>
+                <th>
+                    <span>Fecha de Registro</span>
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr style="cursor:pointer;">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nombre)
+                    </td>
+                    <td>
+                        <span>@item.FechaRegistro</span>
+                    </td>
+                    <td>
+                        @Html.ActionLink("Editar", "EditarAsignatura", new { id = item.IDAsignatura }, new { @class = "btn btn-warning actions", style = "display:none;" })
+                        @Html.ActionLink("Borrar", "BorrarAsignatura", new { id = item.IDAsignatura }, new { @class = "btn btn-danger borrar actions", style = "display:none;" })
+                    </td>
+                </tr>
+            }
+
+        </table>
+        @Html.ActionLink("Agregar Asignatura", "AgregarAsignatura", new { }, new { @class = "btn btn-success", style = "width:270px;" })
+    }
+}
+
+@section scripts
+{
+    <script>var msg = "¿Seguro que desea borrar esta asignatura?\nSe borrarán todas sus referencias.";</script>
+    <script src="~/Scripts/vistaIndexJS.js"></script>
+}

@@ -1,0 +1,364 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="ManageITLAModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Asignaturas">
+          <Key>
+            <PropertyRef Name="IDAsignatura" />
+          </Key>
+          <Property Name="IDAsignatura" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="FechaRegistro" Type="datetime" />
+        </EntityType>
+        <EntityType Name="DetalleProfesorAsignatura">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IDAsignatura" Type="int" Nullable="false" />
+          <Property Name="IDProfesor" Type="int" Nullable="false" />
+          <Property Name="FechaAsignacion" Type="date" Nullable="false" />
+          <Property Name="Cuatrimestre" Type="varchar" MaxLength="30" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Estudiantes">
+          <Key>
+            <PropertyRef Name="IDEstudiante" />
+          </Key>
+          <Property Name="IDEstudiante" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="Apellido" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="FechaNacimiento" Type="date" Nullable="false" />
+          <Property Name="Sexo" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="FechaRegistro" Type="datetime" />
+        </EntityType>
+        <EntityType Name="EstudianteSeleccionAsignatura">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IDAsignatura" Type="int" Nullable="false" />
+          <Property Name="IDEstudiante" Type="int" Nullable="false" />
+          <Property Name="FechaSeleccion" Type="date" Nullable="false" />
+          <Property Name="Cuatrimestre" Type="varchar" MaxLength="30" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Profesores">
+          <Key>
+            <PropertyRef Name="IDProfesor" />
+          </Key>
+          <Property Name="IDProfesor" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Nombre" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="Apellido" Type="varchar" MaxLength="30" Nullable="false" />
+          <Property Name="Sexo" Type="char" MaxLength="1" Nullable="false" />
+          <Property Name="FechaRegistro" Type="datetime" />
+        </EntityType>
+        <Association Name="FK__DetallePr__IDAsi__75A278F5">
+          <End Role="Asignaturas" Type="Self.Asignaturas" Multiplicity="1" />
+          <End Role="DetalleProfesorAsignatura" Type="Self.DetalleProfesorAsignatura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Asignaturas">
+              <PropertyRef Name="IDAsignatura" />
+            </Principal>
+            <Dependent Role="DetalleProfesorAsignatura">
+              <PropertyRef Name="IDAsignatura" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__DetallePr__IDPro__76969D2E">
+          <End Role="Profesores" Type="Self.Profesores" Multiplicity="1" />
+          <End Role="DetalleProfesorAsignatura" Type="Self.DetalleProfesorAsignatura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Profesores">
+              <PropertyRef Name="IDProfesor" />
+            </Principal>
+            <Dependent Role="DetalleProfesorAsignatura">
+              <PropertyRef Name="IDProfesor" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Estudiant__IDAsi__797309D9">
+          <End Role="Asignaturas" Type="Self.Asignaturas" Multiplicity="1" />
+          <End Role="EstudianteSeleccionAsignatura" Type="Self.EstudianteSeleccionAsignatura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Asignaturas">
+              <PropertyRef Name="IDAsignatura" />
+            </Principal>
+            <Dependent Role="EstudianteSeleccionAsignatura">
+              <PropertyRef Name="IDAsignatura" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Estudiant__IDEst__7A672E12">
+          <End Role="Estudiantes" Type="Self.Estudiantes" Multiplicity="1" />
+          <End Role="EstudianteSeleccionAsignatura" Type="Self.EstudianteSeleccionAsignatura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Estudiantes">
+              <PropertyRef Name="IDEstudiante" />
+            </Principal>
+            <Dependent Role="EstudianteSeleccionAsignatura">
+              <PropertyRef Name="IDEstudiante" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="sp_borrarAsignatura" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="IDAsignatura" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_borrarEstudiante" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="IDEst" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_borrarProfesor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="IDProf" Type="int" Mode="In" />
+        </Function>
+        <EntityContainer Name="ManageITLAModelStoreContainer">
+          <EntitySet Name="Asignaturas" EntityType="Self.Asignaturas" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DetalleProfesorAsignatura" EntityType="Self.DetalleProfesorAsignatura" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Estudiantes" EntityType="Self.Estudiantes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EstudianteSeleccionAsignatura" EntityType="Self.EstudianteSeleccionAsignatura" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Profesores" EntityType="Self.Profesores" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__DetallePr__IDAsi__75A278F5" Association="Self.FK__DetallePr__IDAsi__75A278F5">
+            <End Role="Asignaturas" EntitySet="Asignaturas" />
+            <End Role="DetalleProfesorAsignatura" EntitySet="DetalleProfesorAsignatura" />
+          </AssociationSet>
+          <AssociationSet Name="FK__DetallePr__IDPro__76969D2E" Association="Self.FK__DetallePr__IDPro__76969D2E">
+            <End Role="Profesores" EntitySet="Profesores" />
+            <End Role="DetalleProfesorAsignatura" EntitySet="DetalleProfesorAsignatura" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Estudiant__IDAsi__797309D9" Association="Self.FK__Estudiant__IDAsi__797309D9">
+            <End Role="Asignaturas" EntitySet="Asignaturas" />
+            <End Role="EstudianteSeleccionAsignatura" EntitySet="EstudianteSeleccionAsignatura" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Estudiant__IDEst__7A672E12" Association="Self.FK__Estudiant__IDEst__7A672E12">
+            <End Role="Estudiantes" EntitySet="Estudiantes" />
+            <End Role="EstudianteSeleccionAsignatura" EntitySet="EstudianteSeleccionAsignatura" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="ManageITLAModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="ManageITLAContext" annotation:LazyLoadingEnabled="true">
+          <FunctionImport Name="sp_borrarAsignatura">
+          <Parameter Name="IDAsignatura" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_borrarProfesor">
+          <Parameter Name="IDProf" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="Asignaturas" EntityType="ManageITLAModel.Asignaturas" />
+          <EntitySet Name="DetalleProfesorAsignatura" EntityType="ManageITLAModel.DetalleProfesorAsignatura" />
+          <EntitySet Name="Estudiantes" EntityType="ManageITLAModel.Estudiantes" />
+          <EntitySet Name="EstudianteSeleccionAsignatura" EntityType="ManageITLAModel.EstudianteSeleccionAsignatura" />
+          <EntitySet Name="Profesores" EntityType="ManageITLAModel.Profesores" />
+          <AssociationSet Name="FK__DetallePr__IDAsi__75A278F5" Association="ManageITLAModel.FK__DetallePr__IDAsi__75A278F5">
+            <End Role="Asignaturas" EntitySet="Asignaturas" />
+            <End Role="DetalleProfesorAsignatura" EntitySet="DetalleProfesorAsignatura" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Estudiant__IDAsi__797309D9" Association="ManageITLAModel.FK__Estudiant__IDAsi__797309D9">
+            <End Role="Asignaturas" EntitySet="Asignaturas" />
+            <End Role="EstudianteSeleccionAsignatura" EntitySet="EstudianteSeleccionAsignatura" />
+          </AssociationSet>
+          <AssociationSet Name="FK__DetallePr__IDPro__76969D2E" Association="ManageITLAModel.FK__DetallePr__IDPro__76969D2E">
+            <End Role="Profesores" EntitySet="Profesores" />
+            <End Role="DetalleProfesorAsignatura" EntitySet="DetalleProfesorAsignatura" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Estudiant__IDEst__7A672E12" Association="ManageITLAModel.FK__Estudiant__IDEst__7A672E12">
+            <End Role="Estudiantes" EntitySet="Estudiantes" />
+            <End Role="EstudianteSeleccionAsignatura" EntitySet="EstudianteSeleccionAsignatura" />
+          </AssociationSet>
+          <FunctionImport Name="sp_borrarEstudiante">
+          <Parameter Name="IDEst" Mode="In" Type="Int32" />
+          </FunctionImport>
+          </EntityContainer>
+        <EntityType Name="Asignaturas">
+          <Key>
+            <PropertyRef Name="IDAsignatura" />
+          </Key>
+          <Property Name="IDAsignatura" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="FechaRegistro" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="DetalleProfesorAsignatura" Relationship="ManageITLAModel.FK__DetallePr__IDAsi__75A278F5" FromRole="Asignaturas" ToRole="DetalleProfesorAsignatura" />
+          <NavigationProperty Name="EstudianteSeleccionAsignatura" Relationship="ManageITLAModel.FK__Estudiant__IDAsi__797309D9" FromRole="Asignaturas" ToRole="EstudianteSeleccionAsignatura" />
+        </EntityType>
+        <EntityType Name="DetalleProfesorAsignatura">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IDAsignatura" Type="Int32" Nullable="false" />
+          <Property Name="IDProfesor" Type="Int32" Nullable="false" />
+          <Property Name="FechaAsignacion" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Cuatrimestre" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Asignaturas" Relationship="ManageITLAModel.FK__DetallePr__IDAsi__75A278F5" FromRole="DetalleProfesorAsignatura" ToRole="Asignaturas" />
+          <NavigationProperty Name="Profesores" Relationship="ManageITLAModel.FK__DetallePr__IDPro__76969D2E" FromRole="DetalleProfesorAsignatura" ToRole="Profesores" />
+        </EntityType>
+        <EntityType Name="Estudiantes">
+          <Key>
+            <PropertyRef Name="IDEstudiante" />
+          </Key>
+          <Property Name="IDEstudiante" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="Apellido" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="FechaNacimiento" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Sexo" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="FechaRegistro" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="EstudianteSeleccionAsignatura" Relationship="ManageITLAModel.FK__Estudiant__IDEst__7A672E12" FromRole="Estudiantes" ToRole="EstudianteSeleccionAsignatura" />
+        </EntityType>
+        <EntityType Name="EstudianteSeleccionAsignatura">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IDAsignatura" Type="Int32" Nullable="false" />
+          <Property Name="IDEstudiante" Type="Int32" Nullable="false" />
+          <Property Name="FechaSeleccion" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Cuatrimestre" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Asignaturas" Relationship="ManageITLAModel.FK__Estudiant__IDAsi__797309D9" FromRole="EstudianteSeleccionAsignatura" ToRole="Asignaturas" />
+          <NavigationProperty Name="Estudiantes" Relationship="ManageITLAModel.FK__Estudiant__IDEst__7A672E12" FromRole="EstudianteSeleccionAsignatura" ToRole="Estudiantes" />
+        </EntityType>
+        <EntityType Name="Profesores">
+          <Key>
+            <PropertyRef Name="IDProfesor" />
+          </Key>
+          <Property Name="IDProfesor" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Nombre" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="Apellido" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="Sexo" Type="String" Nullable="false" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="FechaRegistro" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="DetalleProfesorAsignatura" Relationship="ManageITLAModel.FK__DetallePr__IDPro__76969D2E" FromRole="Profesores" ToRole="DetalleProfesorAsignatura" />
+        </EntityType>
+        <Association Name="FK__DetallePr__IDAsi__75A278F5">
+          <End Type="ManageITLAModel.Asignaturas" Role="Asignaturas" Multiplicity="1" />
+          <End Type="ManageITLAModel.DetalleProfesorAsignatura" Role="DetalleProfesorAsignatura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Asignaturas">
+              <PropertyRef Name="IDAsignatura" />
+            </Principal>
+            <Dependent Role="DetalleProfesorAsignatura">
+              <PropertyRef Name="IDAsignatura" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Estudiant__IDAsi__797309D9">
+          <End Type="ManageITLAModel.Asignaturas" Role="Asignaturas" Multiplicity="1" />
+          <End Type="ManageITLAModel.EstudianteSeleccionAsignatura" Role="EstudianteSeleccionAsignatura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Asignaturas">
+              <PropertyRef Name="IDAsignatura" />
+            </Principal>
+            <Dependent Role="EstudianteSeleccionAsignatura">
+              <PropertyRef Name="IDAsignatura" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__DetallePr__IDPro__76969D2E">
+          <End Type="ManageITLAModel.Profesores" Role="Profesores" Multiplicity="1" />
+          <End Type="ManageITLAModel.DetalleProfesorAsignatura" Role="DetalleProfesorAsignatura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Profesores">
+              <PropertyRef Name="IDProfesor" />
+            </Principal>
+            <Dependent Role="DetalleProfesorAsignatura">
+              <PropertyRef Name="IDProfesor" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Estudiant__IDEst__7A672E12">
+          <End Type="ManageITLAModel.Estudiantes" Role="Estudiantes" Multiplicity="1" />
+          <End Type="ManageITLAModel.EstudianteSeleccionAsignatura" Role="EstudianteSeleccionAsignatura" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Estudiantes">
+              <PropertyRef Name="IDEstudiante" />
+            </Principal>
+            <Dependent Role="EstudianteSeleccionAsignatura">
+              <PropertyRef Name="IDEstudiante" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="ManageITLAModelStoreContainer" CdmEntityContainer="ManageITLAContext">
+          <FunctionImportMapping FunctionImportName="sp_borrarAsignatura" FunctionName="ManageITLAModel.Store.sp_borrarAsignatura" />
+          <FunctionImportMapping FunctionImportName="sp_borrarProfesor" FunctionName="ManageITLAModel.Store.sp_borrarProfesor" />
+          <EntitySetMapping Name="Asignaturas">
+            <EntityTypeMapping TypeName="ManageITLAModel.Asignaturas">
+              <MappingFragment StoreEntitySet="Asignaturas">
+                <ScalarProperty Name="FechaRegistro" ColumnName="FechaRegistro" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="IDAsignatura" ColumnName="IDAsignatura" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DetalleProfesorAsignatura">
+            <EntityTypeMapping TypeName="ManageITLAModel.DetalleProfesorAsignatura">
+              <MappingFragment StoreEntitySet="DetalleProfesorAsignatura">
+                <ScalarProperty Name="Cuatrimestre" ColumnName="Cuatrimestre" />
+                <ScalarProperty Name="FechaAsignacion" ColumnName="FechaAsignacion" />
+                <ScalarProperty Name="IDProfesor" ColumnName="IDProfesor" />
+                <ScalarProperty Name="IDAsignatura" ColumnName="IDAsignatura" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Estudiantes">
+            <EntityTypeMapping TypeName="ManageITLAModel.Estudiantes">
+              <MappingFragment StoreEntitySet="Estudiantes">
+                <ScalarProperty Name="FechaRegistro" ColumnName="FechaRegistro" />
+                <ScalarProperty Name="Sexo" ColumnName="Sexo" />
+                <ScalarProperty Name="FechaNacimiento" ColumnName="FechaNacimiento" />
+                <ScalarProperty Name="Apellido" ColumnName="Apellido" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="IDEstudiante" ColumnName="IDEstudiante" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EstudianteSeleccionAsignatura">
+            <EntityTypeMapping TypeName="ManageITLAModel.EstudianteSeleccionAsignatura">
+              <MappingFragment StoreEntitySet="EstudianteSeleccionAsignatura">
+                <ScalarProperty Name="Cuatrimestre" ColumnName="Cuatrimestre" />
+                <ScalarProperty Name="FechaSeleccion" ColumnName="FechaSeleccion" />
+                <ScalarProperty Name="IDEstudiante" ColumnName="IDEstudiante" />
+                <ScalarProperty Name="IDAsignatura" ColumnName="IDAsignatura" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Profesores">
+            <EntityTypeMapping TypeName="ManageITLAModel.Profesores">
+              <MappingFragment StoreEntitySet="Profesores">
+                <ScalarProperty Name="FechaRegistro" ColumnName="FechaRegistro" />
+                <ScalarProperty Name="Sexo" ColumnName="Sexo" />
+                <ScalarProperty Name="Apellido" ColumnName="Apellido" />
+                <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="IDProfesor" ColumnName="IDProfesor" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_borrarEstudiante" FunctionName="ManageITLAModel.Store.sp_borrarEstudiante" />
+          </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

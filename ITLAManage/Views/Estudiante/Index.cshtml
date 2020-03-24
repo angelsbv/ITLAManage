@@ -1,0 +1,212 @@
+﻿@model IEnumerable<ITLAManage.Models.Estudiantes>
+@using ITLAManage.Models;
+
+@{
+    ViewBag.Title = "Listado de Estudiantes";
+}
+
+
+
+@{ if (Model.Count() == 0)
+    {
+        <center><h3><strong>Actualmente no existen estudiantes, intente @Html.ActionLink("agregar uno.", "Agregar")</strong></h3></center>
+    }
+    else
+    {
+        <h2>Listado de Estudiantes</h2>
+        <table class="table table-hover table-responsive">
+            <tr>
+                <th>
+                    Nombre(s)
+                </th>
+                <th>
+                    Apellido(s)
+                </th>
+                <th>
+                    Fecha de<br/>Nacimiento
+                </th>
+                <th>
+                    Sexo
+                </th>
+                <th>
+                    Asignaturas
+                </th>
+                <th>
+                    Cuatrimestre
+                </th>
+                <th>
+                    Fecha de Registro
+                </th>
+                <th>
+                </th>
+            </tr>
+            @foreach (var item in Model)
+            {
+        <tr style="cursor:pointer;">
+            <td hidden>
+                <input class="IDEstudiante" value="@item.IDEstudiante" hidden />
+            </td>
+            <td hidden>
+                <input class="nomEst" value="@item.Nombre @item.Apellido" hidden />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Apellido)
+            </td>
+            <td>
+                <span>@item.FechaNacimiento.ToShortDateString()</span>
+            </td>
+            <td>
+                @{
+                    if (item.Sexo == "M")
+                    {
+                        <span>Masculino</span>
+                    }
+                    else
+                    {
+                        <span>Femenino</span>
+                    }
+                }
+            </td>
+            <td>
+                @{
+                    using (var db = new ManageITLAContext())
+                    {
+                        var data = from e in db.Estudiantes
+                                   join esa in db.EstudianteSeleccionAsignatura on e.IDEstudiante equals esa.IDEstudiante
+                                   join a in db.Asignaturas on esa.IDAsignatura equals a.IDAsignatura
+                                   where e.IDEstudiante == item.IDEstudiante
+                                   select a;
+                        if (data.Count() != 0)
+                        {
+                            <select class="form-control opt asignatura">
+                                @foreach (var a in data)
+                                {
+                                    <option value="@a.IDAsignatura">@a.Nombre</option>
+                                }
+                            </select>
+                        }
+                        else
+                        {
+                            <span>No tiene materias<br />asignadas.</span>
+                        }
+                    }
+                }
+            </td>
+            <td>
+                @{
+                    var bd = new ManageITLAContext();
+                    var cuat = from esa in bd.EstudianteSeleccionAsignatura
+                               where esa.IDEstudiante == item.IDEstudiante
+                               select esa;
+                    if (cuat.Count() != 0)
+                    {
+                        <select class="form-control opt" onchange="setValue()">
+                            @foreach (var i in cuat)
+                            {
+                                <option value="@i.Cuatrimestre">@i.Cuatrimestre</option>
+                            }
+                        </select>
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                }
+            </td>
+            <td>
+                <span>@item.FechaRegistro</span>
+            </td>
+            <td>
+                @Html.ActionLink("Agregar Mat.", "AgregarMateriaEstudiante", new { id = item.IDEstudiante }, new { @class = "btn btn-primary actions", style = "display:none;" })
+                <input value="Borrar Mat." class="btn btn-info actions" style="display:none;" onclick="eliminarMateria();" type="button" />
+                @Html.ActionLink("Editar", "Editar", new { id = item.IDEstudiante }, new { @class = "btn btn-warning actions", style = "display:none;" })
+                @Html.ActionLink("Borrar", "Borrar", new { id = item.IDEstudiante }, new { @class = "btn btn-danger borrar actions", style = "display:none;" })
+            </td>
+        </tr>
+            }
+        </table>
+        @Html.ActionLink("Agregar Estudiante", "Agregar", new { }, new { @class = "btn btn-success", style = "width:270px;" })
+    }
+}
+
+@section scripts
+{
+    <script src="~/Scripts/vistaIndexJS.js"></script>
+    <script>var msg = "¿Seguro que desea borrar este estudiante?\nSe borrarán todas sus referencias.";</script>
+    <script>
+        var IDEstudiante  = null;
+        var IDAsignatura  = null;
+        var nomEst        = null;
+        var nomAsign      = null;
+
+        var sel = document.querySelectorAll('.opt');
+
+        sel.forEach(t => { t.setAttribute("disabled", "disabled"); });
+        document.querySelectorAll("tr")
+            .forEach(row =>
+            {
+                row.addEventListener("click", function (evt)
+                {
+                    if (row.children[0].tagName != "TH") {
+                        IDEstudiante = row.querySelector('.IDEstudiante').value;
+                        IDAsignatura = row.querySelector('.asignatura').selectedOptions[0].value;
+                        nomEst      = row.querySelector(".nomEst").value;
+                        nomAsign     = row.querySelector(".asignatura").selectedOptions[0].innerHTML;
+                    }
+                    row.querySelectorAll('.opt')
+                        .forEach(opt =>
+                        {
+                            opt.disabled = false;
+                            opt.addEventListener("click", function (e)
+                            {
+                                IDEstudiante = row.querySelector('.IDEstudiante').value;
+                                IDAsignatura = row.querySelector('.asignatura').selectedOptions[0].value;
+                                nomEst       = row.querySelector(".nomEst").value;
+                                nomAsign     = row.querySelector(".asignatura").selectedOptions[0].innerHTML;
+                                evt.stopImmediatePropagation();
+                                e.stopImmediatePropagation();
+                                var seledIndex = e.target.options.selectedIndex;
+                                row.querySelectorAll('.opt')
+                                    .forEach(t => { t.options.selectedIndex = seledIndex });
+                            });
+                        });
+                });
+            });
+
+                function eliminarMateria(msg) {
+            /*
+            console.log(IDAsignatura);
+            console.log(IDProfesor);
+            console.log(nomProf);
+            console.log(nomAsign);
+            console.log(countAsigns);
+            */
+            var msg = `¿Seguro que desea eliminar esta asignación?
+                    \nNombre Est.: ${nomEst}
+                    \nNombre Asign.: ${nomAsign}`
+            if (confirm(msg))
+            {
+                $.ajax(
+                {
+                    type: 'POST',
+                    url: '@Url.Action("EliminarMateriaEstudiante")',
+                    datatype: 'JSON',
+                    data:
+                    {
+                        IDEst: IDEstudiante,
+                        IDAsign: IDAsignatura
+                    },
+                    success: () => {
+                        window.location = '@Url.Action("Index", "Estudiante")'
+                    },
+                    error: () => {
+                        console.log("Ha ocurrido un error al eliminar.");
+                    }
+                    })
+            }
+        }
+    </script>
+}

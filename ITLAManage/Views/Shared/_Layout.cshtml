@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                @Html.ActionLink("ITLA Admin", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">@Html.ActionLink("Estudiantes", "Index", "Estudiante", new { }, new { @class = "nav-link text-dark" })</li>
+                        <li class="nav-item">@Html.ActionLink("Profesores", "Index", "Profesor", new { }, new { @class = "nav-link text-dark" })</li>
+                        <li class="nav-item">@Html.ActionLink("Asignaturas", "Index", "Asignatura", new { }, new { @class = "nav-link text-dark" })</li>
+                        <li class="nav-item">@Html.ActionLink("Acerca de", "About", "Home", new { }, new { @class = "nav-link text-dark" })</li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top text-muted text-center">
+        <p style="margin:10px;"><strong>&copy; SB Meek Company </strong> - All rights reserved (@DateTime.Now.Year)</p>
+    </footer>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

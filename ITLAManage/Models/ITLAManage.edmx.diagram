@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="f20975c66a86413d87501c739c66334f" Name="Diagram1" ZoomLevel="34">
+        <EntityTypeShape EntityType="ManageITLAModel.Asignaturas" Width="1.5" PointX="0.75" PointY="3.875" />
+        <EntityTypeShape EntityType="ManageITLAModel.DetalleProfesorAsignatura" Width="1.5" PointX="3" PointY="3.625" />
+        <EntityTypeShape EntityType="ManageITLAModel.Estudiantes" Width="1.5" PointX="3.75" PointY="8.625" />
+        <EntityTypeShape EntityType="ManageITLAModel.EstudianteSeleccionAsignatura" Width="1.5" PointX="6" PointY="3.625" />
+        <EntityTypeShape EntityType="ManageITLAModel.Profesores" Width="1.5" PointX="0.75" PointY="0.75" />
+        <AssociationConnector Association="ManageITLAModel.FK__DetallePr__IDAsi__75A278F5" />
+        <AssociationConnector Association="ManageITLAModel.FK__Estudiant__IDAsi__797309D9" />
+        <AssociationConnector Association="ManageITLAModel.FK__DetallePr__IDPro__76969D2E" />
+        <AssociationConnector Association="ManageITLAModel.FK__Estudiant__IDEst__7A672E12" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

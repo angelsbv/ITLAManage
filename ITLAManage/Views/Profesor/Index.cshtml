@@ -1,0 +1,220 @@
+﻿@model IEnumerable<ITLAManage.Models.Profesores>
+@using ITLAManage.Models
+@{
+    ViewBag.Title = "Profesores";
+}
+
+
+
+@{ if (Model.Count() == 0)
+    {
+        var db = new ManageITLAContext();
+        if (db.Asignaturas.Count() == 0)
+        {
+            <center><h3><strong>No puede agregar profesores si no existen asignaturas, intente @Html.ActionLink("agregar una materia.", "AgregarAsignatura", "Asignatura")</strong></h3></center>
+        }
+        else
+        {
+            <center><h3><strong>Actualmente no existen profesores, intente @Html.ActionLink("agregar uno.", "AgregarProfesor")</strong></h3></center>
+        }
+    }
+    else
+    {
+        <h2>Listado de Profesores</h2>
+        <div>
+                <table class="table table-responsive table-hover">
+                    <tr>
+                        <th>
+                            Nombre Completo
+                        </th>
+                        <th>
+                            Sexo
+                        </th>
+                        <th>
+                            Asignatura(s)
+                        </th>
+                        <th>
+                            Cuatrimestre
+                        </th>
+                        <th>
+                            Fecha de Asignación
+                        </th>
+                        <th>
+                            Fecha de Registro
+                        </th>
+                        <th>
+                        </th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr style="cursor:pointer">
+                            <td hidden>
+                                <input class="IDProfesor" value="@item.IDProfesor" hidden />
+                            </td>
+                            <td>
+                                @item.Nombre @item.Apellido
+                                <input class="nomProf" value="@item.Nombre @item.Apellido" hidden />
+                            </td>
+                            <td>
+                                @{if (item.Sexo == "M")
+                                    { <span>Masculino</span> }
+                                    else
+                                    { <span>Femenino</span> }}
+                            </td>
+
+                            <td>
+                                <select class="form-control opt asignatura" runat="server">
+                                    @using (var db = new ManageITLAContext())
+                                    {
+                                        var a = from dpa in db.DetalleProfesorAsignatura
+                                                join asig in db.Asignaturas on dpa.IDAsignatura equals asig.IDAsignatura
+                                                join prof in db.Profesores on dpa.IDProfesor equals prof.IDProfesor
+                                                where dpa.IDProfesor == item.IDProfesor
+                                                select asig;
+
+                                        foreach (var im in a)
+                                        {
+                                            <option value="@im.IDAsignatura">@im.Nombre</option>
+                                        }
+                                    }
+                                </select>
+                            </td>
+
+                            <td>
+
+                                @{
+                                    var bd = new ManageITLAContext();
+                                    var cuat = from dpa in bd.DetalleProfesorAsignatura
+                                               where dpa.IDProfesor == item.IDProfesor
+                                               select dpa;
+                                    <select class="form-control opt" onchange="setValue()">
+                                        @foreach (var i in cuat)
+                                        {
+                                            <option value="@i.Cuatrimestre" onchange="actualizar();">@i.Cuatrimestre</option>
+                                        }
+                                    </select>
+                                }
+
+                            </td>
+                            <td>
+                                @{
+                                    var dt = from dpa in bd.DetalleProfesorAsignatura
+                                             where dpa.IDProfesor == item.IDProfesor
+                                             select dpa;
+                                    <select class="form-control opt">
+                                        @foreach (var i in dt)
+                                        {
+                                            <option value="@i.FechaAsignacion.ToShortDateString()" onchange="actualizar();">@i.FechaAsignacion.ToShortDateString()</option>
+                                        }
+                                    </select>
+                                }
+                            </td>
+                            <td><span>@item.FechaRegistro</span></td>
+                            <td>
+                                @Html.ActionLink("Agregar Asig.", "AgregarMateriaProfesor", new { id = item.IDProfesor }, new { @class = "btn btn-primary actions", style = "display:none;" })
+                                <input value="Eliminar Asig." class="btn btn-info actions" style="display:none;" onclick="eliminarMateria();" type="button" />
+                                @Html.ActionLink("Editar", "EditarProfesor", new { id = item.IDProfesor }, new { @class = "btn btn-warning actions", style = "display:none;" })
+                                @Html.ActionLink("Borrar", "BorrarProfesor", new { id = item.IDProfesor }, new { @class = "btn btn-danger borrar actions", style = "display:none;" })
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            @Html.ActionLink("Agregar Profesor", "AgregarProfesor", new { }, new { @class = "btn btn-success", style = "width:270px;" })
+        </div>
+    }
+}
+
+@section scripts
+{
+    <script src="~/Scripts/vistaIndexJS.js"></script>
+    <script>var msg = "¿Seguro que desea borrar este profesor?\nTambién se eliminarán sus asignaciones.";</script>
+
+    <script type="text/javascript">
+
+        var IDProfesor    = null;
+        var IDAsignatura  = null;
+        var nomProf       = null;
+        var nomAsign      = null;
+        var countAsigns   = null;
+        var sel           = document.querySelectorAll('.opt');
+
+
+        sel.forEach(t => { t.setAttribute("disabled", "disabled"); });
+        document.querySelectorAll("tr")
+            .forEach(row =>
+            {
+                row.addEventListener("click", function (evt)
+                {
+                    if (row.children[0].tagName != "TH")
+                    {
+                        sel.forEach(t => { t.disabled = true; });
+                        IDProfesor   = row.querySelector('.IDProfesor').value;
+                        IDAsignatura = row.querySelector('.asignatura').selectedOptions[0].value;
+                        nomProf      = row.querySelector(".nomProf").value;
+                        nomAsign     = row.querySelector(".asignatura").selectedOptions[0].innerHTML;
+                        countAsigns  = row.querySelector(".asignatura").options.length;
+                    }
+                    row.querySelectorAll('.opt')
+                        .forEach(opt =>
+                        {
+                            opt.disabled = false;
+                            opt.addEventListener("click", function (e)
+                            {
+                                IDProfesor   = row.querySelector('.IDProfesor').value;
+                                IDAsignatura = row.querySelector('.asignatura').selectedOptions[0].value;
+                                nomProf      = row.querySelector(".nomProf").value;
+                                nomAsign     = row.querySelector(".asignatura").selectedOptions[0].innerHTML;
+                                countAsigns  = row.querySelector(".asignatura").options.length;
+                                evt.stopImmediatePropagation();
+                                e.stopImmediatePropagation();
+                                var seledIndex = e.target.options.selectedIndex;
+                                row.querySelectorAll('.opt')
+                                    .forEach(t => { t.options.selectedIndex = seledIndex });
+                            });
+                        });
+                });
+            });
+
+        function eliminarMateria(msg) {
+            /*
+            console.log(IDAsignatura);
+            console.log(IDProfesor);
+            console.log(nomProf);
+            console.log(nomAsign);
+            console.log(countAsigns);
+            */
+            var msg = `¿Seguro que desea eliminar esta asignación?
+                    \nNombre Prof.: ${nomProf}
+                    \nNombre Asign.: ${nomAsign}`
+            var oka = true;
+            if (countAsigns == 1)
+            {
+                msg += "\n\nADVERTENCIA: Este profesor (actualmente) sólo tiene una asignación, por lo que, también se eliminará."
+                oka = false;
+            }
+            if (confirm(msg))
+            {
+                $.ajax(
+                {
+                    type: 'POST',
+                    url: '@Url.Action("EliminarMateriaProfesor")',
+                    datatype: 'JSON',
+                    data:
+                    {
+                        IDProf: IDProfesor,
+                        IDAsign: IDAsignatura,
+                        crct: oka
+                    },
+                    success: () => {
+                        window.location = '@Url.Action("Index", "Profesor")'
+                    },
+                    error: () => {
+                        console.log(error);
+                    }
+                    })
+            }
+        }
+    </script>
+}
