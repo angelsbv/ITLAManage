@@ -25,7 +25,8 @@ CREATE TABLE Profesores
 	IDProfesor int PRIMARY KEY NOT NULL IDENTITY(0,1),
 	Nombre varchar(30) NOT NULL,
 	Apellido varchar(30) NOT NULL,
-	Sexo char(1) NOT NULL
+	Sexo char(1) NOT NULL,
+	FechaRegistro datetime
 )
 GO
 
